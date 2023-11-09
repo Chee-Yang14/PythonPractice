@@ -1,6 +1,6 @@
-def loop(t):
-    for i in t:
-        print(i)
+def loop(l):
+    for str in l:
+        print(str)
         
 def whileloop():
     c=0
@@ -9,7 +9,11 @@ def whileloop():
         print(c)
 
         
-l = {"printing", "as many", "stuff"}
-
-whileloop()
+l = {"printing", "as many", "stuff", "as", "possible"}
 loop(l)
+whileloop()
+
+for i in range(3):
+    for j in range(3):
+        print("*", end="")
+    print()
