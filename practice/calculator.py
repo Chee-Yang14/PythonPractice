@@ -7,18 +7,19 @@ def main():
 
     if not match:
         print("Invalid input. Please enter an expression like '5 + 3'.")
-    x = float(match.group(1))
-    operation = match.group(2)
-    y = float(match.group(3))
-    if operation == "*":
-        multiply(x,y)
-    if operation == "+":
-        plus(x,y)
-    if operation == "-":
-        minus(x,y)
-    if operation == "divide":
-        divide(x,y)
-        
+    else:
+        x = float(match.group(1))
+        operation = match.group(2)
+        y = float(match.group(3))
+        if operation == "*":
+            multiply(x,y)
+        if operation == "+":
+            plus(x,y)
+        if operation == "-":
+            minus(x,y)
+        if operation == "divide":
+            divide(x,y)
+            
     
 def minus(x,y): 
     z = x-y
