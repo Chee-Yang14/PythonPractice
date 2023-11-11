@@ -9,7 +9,7 @@ def whileloop():
         print(c)
 
         
-l = {"printing", "as many", "stuff", "as", "possible"}
+l = ["printing", "as many", "stuff", "as", "possible"]
 loop(l)
 whileloop()
 
