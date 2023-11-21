@@ -1,8 +1,18 @@
+import random
+
+
 class Entity:
     def __init__(self,name):
         self.name = name
         self.health = 10
         
+    def attack(self, entity):
+        randNum = random.randint(1,20)
+        if(randNum>=10):
+            entity.health =0
+        else:
+            entity.health -= randNum
+    
     def __str__(self):
          return f"name: {self.name}\nhealth: {self.health}"
     
