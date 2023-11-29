@@ -34,7 +34,7 @@ def main():
     
     while(day<8):
         aDay(day,peoples)
-        day -= 1
+        day += 1
         time.sleep(2)
     
 
@@ -137,9 +137,9 @@ def printPeople(people):
 def spawnZombies(zombies):
     if(day<2):
         randNum = random.randint(1,10)
-    elif(day>5):
+    elif(day<5):
         randNum = random.randint(1,50)
-    elif(day>2):
+    elif(2<day>5):
         randNum = random.randint(1,20)
     
     for i in range(randNum):
