@@ -101,7 +101,6 @@ def zomAttack(peoples,zombies):
         if(peoples[ranPeep].health <= 0):
             print(f"{peoples[ranPeep]} has died")
             dead.append(peoples[ranPeep])
-            zombies.remove(zombies[ranPeep])
 
 
 def allAttack(peoples,zombies):
@@ -119,7 +118,6 @@ def allAttack(peoples,zombies):
         if(ammo <= 0):
             break
         
-        print("people attack")
         i.attack(zombies[ranZom])
         ammo= ammo-1
         ammoUsed = ammoUsed+1
@@ -139,7 +137,7 @@ def spawnZombies(zombies):
         randNum = random.randint(1,10)
     elif(day<5):
         randNum = random.randint(1,50)
-    elif(2<day>5):
+    elif(2<day>=5):
         randNum = random.randint(1,20)
     
     for i in range(randNum):
