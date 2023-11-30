@@ -112,16 +112,28 @@ def battle(peoples, zombies, game_day):
             sys.exit()
             
 def zom_attack(peoples, zombies, game_day):
-    for i in zombies:
+    zombies_copy = zombies.copy()  # Create a copy of the original zombies list
+    for i in zombies_copy:
         if len(game_day.dead) >= 7:
             break
-        ran_peep = random.randint(0, len(peoples) - 1)
+        ran_peep = random.randint(1,len(peoples) - 1)
         person = peoples[ran_peep]
+
+        # Introduce a chance for the zombie to miss (e.g., 20% chance)
+        chance_to_miss = random.randint(1,100)
+        if chance_to_miss <= 50:
+            print(f"{i.name} missed {person.name}!")
+            continue
+
         i.attack(person)
         if person.health <= 0:
             print(f"{person.name} has died")
             game_day.dead.append(person)
             peoples.remove(person)
+
+        # Modify the original zombies list
+        zombies.remove(i)
+
 
 def all_attack(peoples, zombies, game_day):
     for i in peoples:
@@ -147,11 +159,11 @@ def print_people(people):
 def spawn_zombies(zombies, day_number):
     rand_num =0
     if day_number <= 2:
-        rand_num = random.randint(1, 10)
+        rand_num = random.randint(10, 20)
     elif day_number <= 5:
-        rand_num = random.randint(5, 15)
+        rand_num = random.randint(15, 35)
     elif day_number <= 7:
-        rand_num = random.randint(10, 30)
+        rand_num = random.randint(20, 50)
 
     for i in range(rand_num):
         zombies.append(Zombie("zombie " + str(i)))
