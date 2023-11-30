@@ -1,26 +1,32 @@
 from contextlib import nullcontext
 import random
+import sys
 import time
 from Person import Person
 from Zombie import Zombie
 
-day = 1
-food = 100
-ammo = 100
-ammoUsed = 0
-foodUsed = 0
-zombies = []
-dead = []
-
+class Day:
+    def __init__(self):
+        self.day_number = 1
+        self.food = 100
+        self.ammo = 100
+        self.ammo_used = 0
+        self.food_used = 0
+        self.zombies = []
+        self.dead = []
+        self.health_potions = 5 
 
 def main():
-    global day
+    # Create an instance of the Day class
+    game_day = Day()
+
     print("You are stuck in a school with 7 other people.\n"
           + "the school is surrounded by zombies that will attack every day\n"+
           "you must survive for 7 days which by then help will arrive \n"+ 
           "utilize your ammo and food to survive at all cost\n")
     spaces()
     name = input("What is your name ")
+    
     you = Person(name)
     tou = Person("tou")
     chue = Person("chue")
@@ -28,124 +34,129 @@ def main():
     meng = Person("meng")
     toney = Person("toney")
     cameron = Person("cameron")
-    peoples = (you,tou,chue,charled,meng,toney,cameron)
+    peoples = [you, tou, chue, charled, meng, toney, cameron]
     spaces()
-    printPeople(peoples)
-    
-    while(day<8):
-        aDay(day,peoples)
-        day += 1
-        time.sleep(2)
-    
+    print_people(peoples)
 
-def battleReport(peoples):
-    global foodUsed
-    foodUsed = food - len(peoples)
-    print(f"the amount of food used for the day is: {foodUsed}")
-    print(f"the amount of ammo used for the day is: {ammoUsed}")
+    for day in range(1, 8):
+        input("Press Enter to start Day {}...".format(day))
+        battle_sequence(game_day, peoples)
     
-    for d in dead:
-        if(dead is nullcontext):
-            print("no one die")
-        else:
+    print("Congratulations, you survived!")
+
+def battle_report(game_day, peoples):
+    game_day.food_used = game_day.food - len(peoples)
+    print(f"the amount of food left is: {game_day.food_used}")
+    print(f"the amount of ammo used for the day is: {game_day.ammo_used}")
+
+    if not game_day.dead:
+        print("No one died.")
+    else:
+        for d in game_day.dead:
             print(f"{d} is dead")
-            
-    for people in peoples:
-        if(people.health<100):
-            damage= people.health - 100
-            print(f"{people.name} took {damage} damage and is now at {people.health} hp")
 
-def battlesequence(day,peoples):
-    print(f"day {day}")
-    spawnZombies(zombies)
-    battle(peoples,zombies)
-    battleReport(peoples)
-
-def aDay(day,peoples):
-    if(day==1):
-        battlesequence(day,peoples)
-    elif(day==2):
-        battlesequence(day,peoples)
-    elif(day==3):
-        battlesequence(day,peoples)
-    elif(day==4):
-        battlesequence(day,peoples)
-    elif(day==5):
-        battlesequence(day,peoples)
-    elif(day==6):
-        battlesequence(day,peoples)
-    elif(day==7):
-        battlesequence(day,peoples)
-        print("congrat you survive")
+    for person in peoples:
+        if person.health < 100:
+            damage = person.health - 100
+            print(f"{person.name} took {damage} damage and is now at {person.health} hp")
 
 
-def battle(peoples, zombies):
+def use_health_potion(game_day, person):
+    person.health += 50
+    if person.health > 100:
+        person.health = 100
+    game_day.health_potions -= 1
+    print(f"{person.name} used a health potion. Current health: {person.health}")
+    print(f"Remaining health potions: {game_day.health_potions}")
+
+
+def battle_sequence(game_day, peoples):
+    spaces()
+    print(f"Day {game_day.day_number}")
+    spawn_zombies(game_day.zombies, game_day.day_number)
+    battle(peoples, game_day.zombies, game_day)
+    rand_num = get_rand_num()
+    battle_report(game_day, peoples)
+    use_health_potion_prompt(game_day, peoples, rand_num)
+    game_day.day_number += 1
+
+def get_rand_num():
+    return random.randint(1, 20)  # Replace this with your actual logic for getting rand_num
+
+def use_health_potion_prompt(game_day, peoples, rand_num):
+    response = input("Do you want to use a health potion? (yes/no): ").lower()
+    if response == "yes" and game_day.health_potions > 0:
+        person_choice = input("On whom do you want to use the health potion? Enter the name: ")
+        for person in peoples:
+            if person.name.lower() == person_choice.lower() and person.health < 100:
+                use_health_potion(game_day, person)
+                break
+        else:
+            print("Invalid choice or the person is already at full health.")
+
+
+def a_day(game_day, peoples):
+    battle_sequence(game_day, peoples)
+
+def battle(peoples, zombies, game_day):
     print(f"{len(zombies)} zombies has arrived")
     print("you are about to battle!")
     spaces()
-    while(len(zombies)!=0):
-        allAttack(peoples,zombies)
-        if(len(zombies)!=0):
-            print("it reach here if zom = 0")
-            zomAttack(peoples,zombies)
-        
-        if(len(dead)==7):
-            print("everybody died you lost!")
+    while len(zombies) != 0 and len(game_day.dead) < 8:
+        all_attack(peoples, zombies, game_day)
+        if len(zombies) != 0:
+            zom_attack(peoples, zombies, game_day)
 
-def zomAttack(peoples,zombies):
+        if len(game_day.dead) == 7:
+            print("everybody died, you lost!")
+            sys.exit()
+            
+def zom_attack(peoples, zombies, game_day):
     for i in zombies:
-        if(len(peoples)<=0):
+        if len(game_day.dead) >= 7:
             break
-        ranPeep = random.randint(0,len(peoples)-1)
-        i.attack(peoples[ranPeep])
-        if(peoples[ranPeep].health <= 0):
-            print(f"{peoples[ranPeep]} has died")
-            dead.append(peoples[ranPeep])
+        ran_peep = random.randint(0, len(peoples) - 1)
+        person = peoples[ran_peep]
+        i.attack(person)
+        if person.health <= 0:
+            print(f"{person.name} has died")
+            game_day.dead.append(person)
+            peoples.remove(person)
 
-
-def allAttack(peoples,zombies):
-    global ammo
-    global ammoUsed
-    
-    print(f"{ammo}")
-    print(f"{len(zombies)}")
-    
+def all_attack(peoples, zombies, game_day):
     for i in peoples:
-        if(len(zombies)<=0):
+        if len(zombies) <= 0:
             break
-        
-        ranZom = random.randint(0,len(zombies)-1)
-        if(ammo <= 0):
-            break
-        
-        i.attack(zombies[ranZom])
-        ammo= ammo-1
-        ammoUsed = ammoUsed+1
-        if(zombies[ranZom].health == 0):
-            print(f"{i.name} attack {zombies[ranZom].name} and killed him")
-            zombies.remove(zombies[ranZom])
-        
-        
 
-def printPeople(people):
+        ran_zom = random.randint(0, len(zombies) - 1)
+        if game_day.ammo <= 0:
+            break
+
+        i.attack(zombies[ran_zom])
+        game_day.ammo -= 1
+        game_day.ammo_used += 1
+        if zombies[ran_zom].health == 0:
+            print(f"{i.name} attack {zombies[ran_zom].name} and killed him")
+            zombies.remove(zombies[ran_zom])
+
+def print_people(people):
     print(f"There are {len(people)} of you guys\n")
     for i in people:
         print(f"{i}\n")
-    
-def spawnZombies(zombies):
-    if(day<2):
-        randNum = random.randint(1,10)
-    elif(day<5):
-        randNum = random.randint(1,50)
-    elif(2<day>=5):
-        randNum = random.randint(1,20)
-    
-    for i in range(randNum):
-        zombies.append(Zombie("zombie "+str(i)))
-    
 
+def spawn_zombies(zombies, day_number):
+    rand_num =0
+    if day_number <= 2:
+        rand_num = random.randint(1, 10)
+    elif day_number <= 5:
+        rand_num = random.randint(5, 15)
+    elif day_number <= 7:
+        rand_num = random.randint(10, 30)
+
+    for i in range(rand_num):
+        zombies.append(Zombie("zombie " + str(i)))
 
 def spaces():
-    print("\n\n")
-    
+    print("\n")
+
 main()
