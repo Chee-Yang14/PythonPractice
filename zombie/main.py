@@ -45,6 +45,7 @@ def main():
     print("Congratulations, you survived!")
 
 def battle_report(game_day, peoples):
+    spaces
     game_day.food_used = game_day.food - len(peoples)
     print(f"the amount of food left is: {game_day.food_used}")
     print(f"the amount of ammo used for the day is: {game_day.ammo_used}")
