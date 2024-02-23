@@ -57,9 +57,8 @@ def battle_report(game_day, peoples):
             print(f"{d} is dead")
 
     for person in peoples:
-        if person.health < 100:
             damage = person.health - 100
-            print(f"{person.name} took {damage} damage and is now at {person.health} hp")
+            print(f"{person.name} took {damage} damage and is at {person.health} hp")
 
 
 def use_health_potion(game_day, person):

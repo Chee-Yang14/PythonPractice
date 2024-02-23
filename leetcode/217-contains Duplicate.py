@@ -10,4 +10,3 @@ def containsDuplicate(self, nums):
            hashmap.add(i)
         return False
     
-    
