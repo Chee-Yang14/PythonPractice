@@ -4,5 +4,13 @@ class Solution(object):
         :type nums: List[int]
         :rtype: List[int]
         """
-        arr = {}
-        
+        ans = []
+        for index, i in enumerate(nums):
+            for jindex, j in enumerate(nums):
+                if(nums[index]==nums[jindex]):
+                    continue
+                elif len(ans)==0:
+                    ans[index].append(j)
+                else:
+                    ans[index] = ans[index] * j
+        return ans
